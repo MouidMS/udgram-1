@@ -10,6 +10,9 @@
 
 ### AWS Cloud Setup
 
+![Architecture](../doc/Architecture-Diagram.jpg)
+
+
 - RDS - Database Host: database-1.ckmiegisejgd.us-east-1.rds.amazonaws.com
 - RDS - Database Port: 5432
 - RDS - Database Name: database-1
