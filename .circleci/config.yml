@@ -13,8 +13,9 @@ jobs:
     steps:
       # install node and checkout code
       - node/install:
-          node-version: "14.15"
+          node-version: '14.15'         
       - checkout
+      - aws-cli/setup
       # Use root level package.json to install dependencies in the frontend app
       - run:
           name: Install Front-End Dependencies
@@ -23,72 +24,63 @@ jobs:
             echo $(node --version)
             echo "NPM --version" 
             echo $(npm --version)
-            npm run frontend:install
-        # TODO: Lint the frontend
+            npm run frontend:install    
       - run:
-          name: Front-End Lint
+          name: Back-End Install
           command: |
-            npm run frontend:lint
-      # TODO: Build the frontend app
+            npm run api:install
       - run:
           name: Front-End Build
           command: |
             npm run frontend:build
-      # Deploying the frontend to AWS S3
-     # - run:
-      #    name: Front-End Deploy
-       #   command: |
-        #    npm run frontend:deploy
-      # TODO: Install dependencies in the the backend API
       - run:
-          name: Install API Dependencies
-          command: |
-            npm run api:install
-      # TODO: Build the backend API
-      - run:
-          name: API Build
+          name: Back-End Build
           command: |
             npm run api:build
-      # Deploying the backend to AWS Elastic Beanstalk
-      #- run:
-       #   name: Back-End Deploy
-        #  command: |
-         #   npm run api:deploy
   # deploy step will run only after manual approval
   deploy:
     docker:
-      - image: "cimg/base:stable"
+      - image: "cimg/node:14.15"
       # more setup needed for aws, node, elastic beanstalk
     steps:
       - node/install:
-          node-version: "14.15"
+          node-version: '14.15' 
       - eb/setup
       - aws-cli/setup
       - checkout
       - run:
-          name: Adding Environment Variables to EB
-          # TODO: Install, build, deploy in both apps
+          name: Install Front-End Dependencies
           command: |
-            cd udagram/udagram-api
-            eb use udagram-api-dev
-            eb setenv POSTGRES_USERNAME=${POSTGRES_USERNAME} POSTGRES_PASSWORD=${POSTGRES_PASSWORD} POSTGRES_HOST=${POSTGRES_HOST} POSTGRES_DB=${POSTGRES_DB} DB_PORT=${DB_PORT} PORT=${PORT} AWS_BUCKET=${AWS_BUCKET} AWS_REGION=${AWS_REGION} AWS_PROFILE=${AWS_PROFILE} JWT_SECRET=${JWT_SECRET} URL=${URL}
+            echo "NODE --version" 
+            echo $(node --version)
+            echo "NPM --version" 
+            echo $(npm --version)
+            npm run frontend:install    
+      - run:
+          name: Back-End Install
+          command: |
+            npm run api:install
+      - run:
+          name: Front-End Build
+          command: |
+            npm run frontend:build
+      - run:
+          name: Back-End Build
+          command: |
+            npm run api:build
       - run:
           name: Deploy App
           command: |
             npm run deploy
-
+            
 workflows:
   udagram:
     jobs:
-      - build
-      - hold:
-          filters:
-            branches:
-              only:
-                - master
-          type: approval
-          requires:
-            - build
+      - build:
+        filters: 
+          branches:
+            only: 
+              - main
       - deploy:
           requires:
-            - hold
+            - build
