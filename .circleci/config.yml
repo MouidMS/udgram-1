@@ -50,10 +50,10 @@ jobs:
           command: |
             npm run api:build
       # Deploying the backend to AWS Elastic Beanstalk
-    #  - run:
-     #     name: Back-End Deploy
-      #    command: |
-       #     npm run api:deploy
+      - run:
+          name: Back-End Deploy
+          command: |
+            npm run api:deploy
   # deploy step will run only after manual approval
   deploy:
     docker:
@@ -65,17 +65,17 @@ jobs:
       - eb/setup
       - aws-cli/setup
       - checkout
-    - run:
+      - run:
           name: Adding Environment Variables to EB
+          # TODO: Install, build, deploy in both apps
           command: |
             cd udagram/udagram-api
             eb use udagram-api-dev
             eb setenv POSTGRES_USERNAME=${POSTGRES_USERNAME} POSTGRES_PASSWORD=${POSTGRES_PASSWORD} POSTGRES_HOST=${POSTGRES_HOST} POSTGRES_DB=${POSTGRES_DB} DB_PORT=${DB_PORT} PORT=${PORT} AWS_BUCKET=${AWS_BUCKET} AWS_REGION=${AWS_REGION} AWS_PROFILE=${AWS_PROFILE} JWT_SECRET=${JWT_SECRET} URL=${URL}
-    - run:
+      - run:
           name: Deploy App
           command: |
             npm run deploy
-
 
 workflows:
   udagram:
