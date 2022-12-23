@@ -51,6 +51,7 @@ From the root of the project:
 - `npm run backend:deploy` - To deploy the project to EB using `./udagram-api/bin/deploy.sh` deploy script.
 
 ## CircleCi
+![CircleCi](../doc/circleci.jpg)
 
 The order of the run jobs:
 
