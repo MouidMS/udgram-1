@@ -10,6 +10,9 @@
 
 ### AWS Cloud Setup
 
+![Architecture](../doc/Architecture-Diagram.jpg)
+
+
 - RDS - Database Host: database-1.ckmiegisejgd.us-east-1.rds.amazonaws.com
 - RDS - Database Port: 5432
 - RDS - Database Name: database-1
@@ -48,6 +51,7 @@ From the root of the project:
 - `npm run backend:deploy` - To deploy the project to EB using `./udagram-api/bin/deploy.sh` deploy script.
 
 ## CircleCi
+![CircleCi](../doc/circleci.jpg)
 
 The order of the run jobs:
 
